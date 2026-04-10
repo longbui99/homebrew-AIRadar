@@ -7,7 +7,6 @@ class AiStatusBar < Formula
 
   depends_on :macos
   depends_on "python@3"
-  depends_on cask: "swiftbar"
 
   def install
     libexec.install "bin", "providers", "utils", "config.json", "ai-manager.1h.py"
@@ -25,6 +24,11 @@ class AiStatusBar < Formula
     manager_src = libexec/"ai-manager.1h.py"
     manager_src.chmod(0755)
     (plugin_dir/"ai-manager.1h.py").make_symlink(manager_src)
+
+    # Install SwiftBar if missing
+    unless system("brew", "list", "--cask", "swiftbar", out: File::NULL, err: File::NULL)
+      system "brew", "install", "--cask", "swiftbar"
+    end
 
     # Configure and launch SwiftBar
     system "defaults", "write", "com.ameba.SwiftBar", "PluginDirectory", plugin_dir.to_s
