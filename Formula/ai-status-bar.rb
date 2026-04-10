@@ -17,25 +17,25 @@ class AiStatusBar < Formula
     plugin_dir = Pathname.new(Dir.home)/"Library/Application Support/SwiftBar/Plugins"
     plugin_dir.mkpath
 
-    # Clean old manager symlinks
-    plugin_dir.children.select { |f| f.basename.to_s.start_with?("ai-manager.") }.each(&:delete)
-
-    # Symlink manager plugin
+    # Symlink manager plugin (remove old one first)
+    manager_link = plugin_dir/"ai-manager.1h.py"
+    manager_link.unlink if manager_link.exist? || manager_link.symlink?
     manager_src = libexec/"ai-manager.1h.py"
     manager_src.chmod(0755)
-    (plugin_dir/"ai-manager.1h.py").make_symlink(manager_src)
+    manager_link.make_symlink(manager_src)
 
     # Install SwiftBar if missing
-    system "brew", "list", "--cask", "swiftbar" or
+    unless quiet_system("brew", "list", "--cask", "swiftbar")
       system "brew", "install", "--cask", "swiftbar"
+    end
 
     # Configure and launch SwiftBar
-    system "defaults", "write", "com.ameba.SwiftBar", "PluginDirectory", plugin_dir.to_s
-    system "killall", "SwiftBar" if system("pgrep", "-q", "SwiftBar")
+    quiet_system("defaults", "write", "com.ameba.SwiftBar", "PluginDirectory", plugin_dir.to_s)
+    quiet_system("killall", "SwiftBar")
     sleep 1
     swiftbar_app = Dir["/opt/homebrew/Caskroom/swiftbar/*/SwiftBar.app",
                        "/Applications/SwiftBar.app"].first
-    system "open", swiftbar_app if swiftbar_app
+    quiet_system("open", swiftbar_app) if swiftbar_app
   end
 
   test do
