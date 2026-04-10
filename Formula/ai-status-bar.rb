@@ -13,29 +13,13 @@ class AiStatusBar < Formula
     bin.install_symlink libexec/"bin/ai-status-bar"
   end
 
-  def post_install
-    plugin_dir = Pathname.new(Dir.home)/"Library/Application Support/SwiftBar/Plugins"
-    plugin_dir.mkpath
+  def caveats
+    <<~EOS
+      To complete setup, run:
+        ai-status-bar activate
 
-    # Symlink manager plugin (remove old one first)
-    manager_link = plugin_dir/"ai-manager.1h.py"
-    manager_link.unlink if manager_link.exist? || manager_link.symlink?
-    manager_src = libexec/"ai-manager.1h.py"
-    manager_src.chmod(0755)
-    manager_link.make_symlink(manager_src)
-
-    # Install SwiftBar if missing
-    unless quiet_system("brew", "list", "--cask", "swiftbar")
-      system "brew", "install", "--cask", "swiftbar"
-    end
-
-    # Configure and launch SwiftBar
-    quiet_system("defaults", "write", "com.ameba.SwiftBar", "PluginDirectory", plugin_dir.to_s)
-    quiet_system("killall", "SwiftBar")
-    sleep 1
-    swiftbar_app = Dir["/opt/homebrew/Caskroom/swiftbar/*/SwiftBar.app",
-                       "/Applications/SwiftBar.app"].first
-    quiet_system("open", swiftbar_app) if swiftbar_app
+      This installs SwiftBar (if needed) and adds the manager to your menu bar.
+    EOS
   end
 
   test do
