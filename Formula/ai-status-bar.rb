@@ -18,7 +18,7 @@ class AiStatusBar < Formula
     plugin_dir.mkpath
 
     # Clean old manager symlinks
-    plugin_dir.glob("ai-manager.*.py").each(&:delete)
+    plugin_dir.children.select { |f| f.basename.to_s.start_with?("ai-manager.") }.each(&:delete)
 
     # Symlink manager plugin
     manager_src = libexec/"ai-manager.1h.py"
@@ -26,16 +26,16 @@ class AiStatusBar < Formula
     (plugin_dir/"ai-manager.1h.py").make_symlink(manager_src)
 
     # Install SwiftBar if missing
-    unless system("brew", "list", "--cask", "swiftbar", out: File::NULL, err: File::NULL)
+    system "brew", "list", "--cask", "swiftbar" or
       system "brew", "install", "--cask", "swiftbar"
-    end
 
     # Configure and launch SwiftBar
     system "defaults", "write", "com.ameba.SwiftBar", "PluginDirectory", plugin_dir.to_s
-    system "killall", "SwiftBar" rescue nil
-    swiftbar = Dir["/opt/homebrew/Caskroom/swiftbar/*/SwiftBar.app",
-                   "/Applications/SwiftBar.app"].first
-    system "open", swiftbar if swiftbar
+    system "killall", "SwiftBar" if system("pgrep", "-q", "SwiftBar")
+    sleep 1
+    swiftbar_app = Dir["/opt/homebrew/Caskroom/swiftbar/*/SwiftBar.app",
+                       "/Applications/SwiftBar.app"].first
+    system "open", swiftbar_app if swiftbar_app
   end
 
   test do
