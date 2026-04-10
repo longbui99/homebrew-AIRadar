@@ -1,32 +1,32 @@
-# Homebrew Tap for AI Status Bar
+# Homebrew Tap for AI Radar
 
-Homebrew formulae for [AI Status Bar](https://github.com/longbui99/AIStatusBar) — AI service usage in your macOS menu bar.
+Homebrew formulae for [AI Radar](https://github.com/longbui99/AIRadar) — AI service usage in your macOS menu bar.
 
 ## Install
 
 ```bash
-brew install longbui99/AIStatusBar/ai-status-bar
+brew install longbui99/AIRadar/ai-radar
 ```
 
 ```bash
-ai-status-bar activate
+ai-radar activate
 ```
 
 ## Update
 
 ```bash
-brew upgrade ai-status-bar
+brew upgrade ai-radar
 ```
 
 ## Uninstall
 
 ```bash
-brew uninstall ai-status-bar
+brew uninstall ai-radar
 ```
 
 ## About
 
-This is a Homebrew tap repository. The source code lives at [longbui99/AIStatusBar](https://github.com/longbui99/AIStatusBar).
+This is a Homebrew tap repository. The source code lives at [longbui99/AIRadar](https://github.com/longbui99/AIRadar).
 
 ## License
 
